@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      var isPalindrome = function(x) {
+        var num = x
+
+        // 先判断一些显而易见的情况
+        if (x < 0) {
+          return false
+        }
+        if (x < 10) {
+          return true
+        }
+        if (x % 10 === 0) {
+          return false
+        }
+
+        let res = 0
+
+        while (x) {
+          res = res * 10 + (x % 10)
+          x = parseInt(x / 10)
+        }
+
+        return res === num
+      }
+
+      var reverse = function(x) {
+        let flag = x > 0
+        let numArr = [] // 创建一个存储反转后的数组
+        let num = 0
+        x = Math.abs(x) // 取绝对值
+
+        let reverse = 0
+
+        while (x) {
+          reverse = reverse * 10 + (x % 10)
+          x = parseInt(x / 10)
+        }
+
+        return reverse
+      }
+    </script>
+  </body>
+</html>

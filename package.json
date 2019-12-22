@@ -1,0 +1,28 @@
+{
+  "name": "leetcode-js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "generate.js",
+  "bin": {
+    "leetcode": "generate.js"
+  },
+  "scripts": {
+    "gen": "leetcode generate"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LazyDuke/leetcode-js.git"
+  },
+  "author": "Lazy Duke (weiguocai.fzu@gmail.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/LazyDuke/leetcode-js/issues"
+  },
+  "homepage": "https://github.com/LazyDuke/leetcode-js#readme",
+  "devDependencies": {
+    "chalk": "^3.0.0",
+    "commander": "^4.0.1",
+    "fs-extra": "^8.1.0",
+    "ora": "^4.0.3"
+  }
+}
