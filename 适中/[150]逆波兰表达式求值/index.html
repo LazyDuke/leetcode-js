@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      function getSuffixExpression(pattern) {
+        const pLen = pattern.length
+        // (1) 初始化两个栈：
+        const stack1 = [] // 运算符栈
+        const stack2 = [] // 操作数栈
+        const OP_REG = /^\d+$/ // 操作数 正则表达式
+        const OPERATOR_REG = /^\+|\-|\*|\/$/ // 运算符 正则表达式
+
+        // (2) 从左至右扫描中缀表达式
+        for (let i = 0; i < pLen; i++) {
+          const cur = pattern[i]
+          // (3) 遇到操作数时，将其压入 s2
+          if (OP_REG.test(cur)) {
+            stack2.push(cur)
+            // (4) 遇到运算符时，比较其与 s1 栈顶运算符的优先级
+          } else if (OPERATOR_REG.test(cur)) {
+            while (
+              !(
+                // (4-1) 如果 s1 为空
+                (
+                  stack1.length === 0 ||
+                  // 或栈顶运算符为 "("
+                  stack1[stack1.length - 1] === '(' ||
+                  // 或优先级比栈顶运算符优先级高
+                  getOperatorLevel(cur) >
+                    getOperatorLevel(stack1[stack1.length - 1])
+                )
+              )
+            ) {
+              // 否则，将 s1 栈顶的运算符弹出并压入到 s2 中，再次转到 (4–1) 与 s1 中新的栈顶运算符相比
+              stack2.push(stack1.pop())
+            }
+            // 将运算符压入 s1
+            stack1.push(cur)
+            // (5) 遇到括号时
+            // (5-1) 如果是 "("
+          } else if (cur === '(') {
+            // 则直接压入 s1
+            stack1.push(cur)
+            // (5-2) 如果是 ")"
+          } else if (cur === ')') {
+            let stack1PopItem
+            // 则依次弹出 s1 栈顶的运算符，并压入 s2 ，直到遇到 "(" 为止，此时将这一对括号丢弃
+            while ((stack1PopItem = stack1.pop()) !== '(') {
+              stack2.push(stack1PopItem)
+            }
+          }
+        }
+
+        // (6) 将 s1 中剩余的运算符依次弹出并压入 s2
+        while (stack1.length > 0) {
+          stack2.push(stack1.pop())
+        }
+
+        // (7) 直接输出 s2 的值，结果即为中缀表达式对应的后缀表达式
+        return stack2.join('')
+
+        /**
+         * @description 获取运算符的等级
+         * @params {string} operator 运算符
+         * */
+        function getOperatorLevel(operator) {
+          const LOW_LEVEL_OPERATOR_REG = /^\+|\-$/ // 低级运算符 正则表达式
+          const HIGH_LEVEL_OPERATOR_REG = /^\+|\-|\*|\/$/ // 高级操作符 正则表达式
+          if (LOW_LEVEL_OPERATOR_REG.test(operator)) {
+            return 1
+          } else if (HIGH_LEVEL_OPERATOR_REG.test(operator)) {
+            return 2
+          }
+        }
+      }
+
+      function getPrefixExpression(pattern) {
+        const pLen = pattern.length
+        // (1) 初始化两个栈：
+        const stack1 = [] // 运算符栈
+        const stack2 = [] // 操作数栈
+        const OP_REG = /^\d+$/ // 操作数 正则表达式
+        const OPERATOR_REG = /^\+|\-|\*|\/$/ // 运算符 正则表达式
+
+        // (2) 从右至左扫描中缀表达式
+        for (let i = pLen - 1; i > -1; i--) {
+          const cur = pattern[i]
+          // (3) 遇到操作数时，将其压入 s2
+          if (OP_REG.test(cur)) {
+            stack2.push(cur)
+            // (4) 遇到运算符时，比较其与 s1 栈顶运算符的优先级
+          } else if (OPERATOR_REG.test(cur)) {
+            while (
+              !(
+                // (4-1) 如果 s1 为空
+                (
+                  stack1.length === 0 ||
+                  // 或栈顶运算符为 ")"
+                  stack1[stack1.length - 1] === ')' ||
+                  // 或优先级比栈顶运算符优先级高或相等
+                  getOperatorLevel(cur) >=
+                    getOperatorLevel(stack1[stack1.length - 1])
+                )
+              )
+            ) {
+              // 否则，将 s1 栈顶的运算符弹出并压入到 s2 中，再次转到 (4–1) 与 s1 中新的栈顶运算符相比
+              stack2.push(stack1.pop())
+            }
+            // 将运算符压入 s1
+            stack1.push(cur)
+            // (5) 遇到括号时
+            // (5-1) 如果是 "("
+          } else if (cur === '(') {
+            let stack1PopItem
+            // 则依次弹出 s1 栈顶的运算符，并压入 s2 ，直到遇到 ")" 为止，此时将这一对括号丢弃
+            while ((stack1PopItem = stack1.pop()) !== ')') {
+              stack2.push(stack1PopItem)
+            }
+            // (5-2) 如果是 ")"
+          } else if (cur === ')') {
+            // 则直接压入 s1
+            stack1.push(cur)
+          }
+        }
+
+        // (6) 将 s1 中剩余的运算符依次弹出并压入 s2
+        while (stack1.length > 0) {
+          stack2.push(stack1.pop())
+        }
+
+        let prefixExpression = ''
+
+        // (7) 依次弹出 s2 中的元素并输出，结果即为中缀表达式对应的前缀表达式
+        while (stack2.length > 0) {
+          prefixExpression += stack2.pop()
+        }
+
+        return prefixExpression
+
+        /**
+         * @description 获取运算符的等级
+         * @params {string} operator 运算符
+         * */
+        function getOperatorLevel(operator) {
+          const LOW_LEVEL_OPERATOR_REG = /^\+|\-$/ // 低级运算符 正则表达式
+          const HIGH_LEVEL_OPERATOR_REG = /^\+|\-|\*|\/$/ // 高级操作符 正则表达式
+          if (LOW_LEVEL_OPERATOR_REG.test(operator)) {
+            return 1
+          } else if (HIGH_LEVEL_OPERATOR_REG.test(operator)) {
+            return 2
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
