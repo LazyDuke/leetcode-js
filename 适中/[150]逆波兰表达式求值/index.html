@@ -8,6 +8,54 @@
   </head>
   <body>
     <script>
+      function evalPN(tokens) {
+        const operation = {
+          '+': (a, b) => a + b,
+          '-': (a, b) => a - b,
+          '*': (a, b) => a * b,
+          '/': (a, b) => Math.trunc(a / b)
+        }
+        const len = tokens.length
+        const stack = []
+
+        for (let i = len - 1; i > -1; i--) {
+          if (tokens[i] in operation) {
+            const a = stack.pop()
+            const b = stack.pop()
+            const result = operation[tokens[i]](a, b)
+            stack.push(result)
+          } else {
+            stack.push(+tokens[i])
+          }
+        }
+
+        return stack.pop()
+      }
+
+      function evalRPN(tokens) {
+        const operation = {
+          '+': (a, b) => a + b,
+          '-': (a, b) => a - b,
+          '*': (a, b) => a * b,
+          '/': (a, b) => Math.trunc(a / b)
+        }
+        const len = tokens.length
+        const stack = []
+
+        for (let i = 0; i < len; i++) {
+          if (tokens[i] in operation) {
+            const b = stack.pop()
+            const a = stack.pop()
+            const result = operation[tokens[i]](a, b)
+            stack.push(result)
+          } else {
+            stack.push(+tokens[i])
+          }
+        }
+
+        return stack.pop()
+      }
+
       function getSuffixExpression(pattern) {
         const pLen = pattern.length
         // (1) 初始化两个栈：

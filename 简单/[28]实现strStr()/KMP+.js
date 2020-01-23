@@ -41,23 +41,32 @@ var strStr = function(haystack, needle) {
   function getNextVal(str) {
     const nextVal = [-1, 0]
     // const next = [-1, 0]
-    // next[0] = -1
-    // next[1] = 0
-    let j = 0
-    let i = 1
+    let k = 0
+    let j = 1
 
-    while (i < str.length - 1) {
-      if (j === -1 || str[i] === str[j]) {
-        ++j
-        ++i
-        // next[i] = j
-        if (str[i] !== str[j]) {
-          nextVal[i] = j // nextVal[i] = next[i]
+    while (j < str.length - 1) {
+      if (k === -1 || str[j] === str[k]) {
+        // next[j + 1] = k + 1
+
+        // if (str[j + 1] !== str[next[j + 1]]) {
+        //   nextVal[j + 1] = next[j + 1]
+        // } else {
+        //   nextVal[j + 1] = nextVal[next[j + 1]]
+        // }
+
+        // k++
+        // j++
+
+        k++
+        j++
+
+        if (str[j] !== str[k]) {
+          nextVal[j] = k
         } else {
-          nextVal[i] = nextVal[j] // nextVal[i] = nextVal[next[i]]
+          nextVal[j] = nextVal[k]
         }
       } else {
-        j = nextVal[j]
+        k = nextVal[k]
       }
     }
 
